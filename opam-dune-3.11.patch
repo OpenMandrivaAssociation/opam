@@ -1,0 +1,11 @@
+--- opam-full-2.1.5/Makefile.orig	2023-05-24 03:26:28.000000000 -0600
++++ opam-full-2.1.5/Makefile	2023-10-03 15:56:54.571948184 -0600
+@@ -162,7 +162,7 @@ custom-libinstall: $(DUNE_DEP) opam-lib
+ 	    $(DUNE) install --root . opam-$$p; \
+ 	done
+ 
+-processed-%.install: %.install
++processed-%.install: _build/default/%.install
+ 	sed -f process.sed $^ > $@
+ 
+ install: processed-opam.install processed-opam-installer.install

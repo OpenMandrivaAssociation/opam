@@ -1,0 +1,34 @@
+--- a/opam-client.opam	2021-07-22 08:37:47.000000000 -0600
++++ b/opam-client.opam	2021-08-07 13:24:59.980151860 -0600
+@@ -30,6 +30,7 @@ depends: [
+   "opam-state" {= version}
+   "opam-solver" {= version}
+   "extlib" {>= "1.7.3" & < "1.7.8"}
++  "base64"
+   "opam-repository" {= version}
+   "re" {>= "1.9.0"}
+   "cmdliner" {>= "1.0.0"}
+--- a/src/client/dune	2021-07-22 08:37:47.000000000 -0600
++++ b/src/client/dune	2021-08-07 13:25:23.949218811 -0600
+@@ -3,7 +3,7 @@
+   (public_name opam-client)
+   (synopsis    "OCaml Package Manager client and CLI library")
+   (modules     (:standard \ opamMain get_git_version))
+-  (libraries   opam-state opam-solver opam-repository re extlib cmdliner)
++  (libraries   opam-state opam-solver opam-repository re extlib base64 cmdliner)
+   (flags       (:standard
+                (:include ../ocaml-flags-standard.sexp)
+                (:include ../ocaml-flags-configure.sexp)
+--- a/src/client/opamSwitchCommand.ml	2021-07-22 08:37:47.000000000 -0600
++++ b/src/client/opamSwitchCommand.ml	2021-08-07 14:18:16.841936646 -0600
+@@ -400,7 +400,7 @@ let import_t ?ask importfile t =
+     OpamPath.Switch.extra_files_dir t.switch_global.root t.switch
+   in
+   OpamHash.Map.iter (fun hash content ->
+-      let value = Base64.decode_string content in
++      let value = Base64.decode_exn content in
+       let my = OpamHash.compute_from_string ~kind:(OpamHash.kind hash) value in
+       if OpamHash.contents my = OpamHash.contents hash then
+         let dst =
+
+
